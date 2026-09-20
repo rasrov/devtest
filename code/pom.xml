@@ -28,6 +28,7 @@
         <module>boot</module>
         <module>domain</module>
         <module>infrastructure</module>
+        <module>rest-clients</module>
     </modules>
 
     <dependencies>
