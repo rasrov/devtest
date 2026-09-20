@@ -1,3 +1,20 @@
 spring:
   application:
     name: devtest
+
+server:
+  port: 5000
+  error:
+    include-message: always
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
