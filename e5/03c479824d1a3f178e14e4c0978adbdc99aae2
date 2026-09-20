@@ -1,0 +1,18 @@
+code/pom.xml
+  h_5d8a431fb8293b 31
+code/rest-clients/pom.xml
+  h_5d8a431fb8293b 1-24
+code/src/test/resources/compose/shared/simulado/mocks.json
+  h_5d8a431fb8293b 1-77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e503c479824d1a3f178e14e4c0978adbdc99aae2",
+  "prompts": {},
+  "humans": {
+    "h_5d8a431fb8293b": {
+      "author": "rasrov <rasulaa@ext.inditex.com>"
+    }
+  }
+}
