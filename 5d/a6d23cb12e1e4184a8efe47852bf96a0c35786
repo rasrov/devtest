@@ -1,0 +1,19 @@
+code/boot/src/main/java/com/inditex/devtest/Application.java
+  s_b2708b259fc57e::t_9acabd50431492 9-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5da6d23cb12e1e4184a8efe47852bf96a0c35786",
+  "prompts": {},
+  "sessions": {
+    "s_b2708b259fc57e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f42181453ffext8Udpl1x7EIBi",
+        "model": "claude-opus-4.8-fast"
+      },
+      "human_author": "rasrov <rasulaa@ext.inditex.com>"
+    }
+  }
+}
