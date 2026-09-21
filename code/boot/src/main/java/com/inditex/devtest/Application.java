@@ -5,11 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication(proxyBeanMethods = false)
-// @EnableCaching
+@EnableCaching
 public class Application {
 
-    public static void main(final String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+	public static void main(final String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
 
 }
