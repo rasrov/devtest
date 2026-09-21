@@ -1,0 +1,14 @@
+README.md
+  h_5d8a431fb8293b 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "273829fdc2a0fcd2137251a39edf2d8c9876ff16",
+  "prompts": {},
+  "humans": {
+    "h_5d8a431fb8293b": {
+      "author": "rasrov <rasulaa@ext.inditex.com>"
+    }
+  }
+}
