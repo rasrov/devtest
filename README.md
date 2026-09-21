@@ -17,7 +17,7 @@
   - [Capa de infraestructura — APIs externas](#capa-de-infraestructura--apis-externas)
   - [Capa de aplicación — Casos de uso](#capa-de-aplicación--casos-de-uso)
   - [Capas boot / domain / common](#capas-boot--domain--common)
-- [🚀 Mejoras futuras](#-mejoras-futuras)
+- [🚀 Mejoras identificadas](#-mejoras-identificadas)
 
 ---
 
