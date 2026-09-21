@@ -1,0 +1,26 @@
+code/application/src/test/java/com/inditex/devtest/usecase/SerchSimilarProductUseCaseImplTest.java
+  h_5d8a431fb8293b 1-146
+code/boot/src/test/java/com/inditex/devtest/controller/ProductControllerIT.java
+  h_5d8a431fb8293b 1-99
+code/infrastructure/src/test/java/com/inditex/devtest/handler/GlobalProblemDetailHandlerTest.java
+  h_5d8a431fb8293b 1-128
+code/pom.xml
+  h_5d8a431fb8293b 50-53
+code/rest-clients/product/src/test/java/com/inditex/devtest/ProductAdapterTest.java
+  h_5d8a431fb8293b 1-188
+code/rest-clients/product/src/test/java/com/inditex/devtest/config/ProductConfigurationTest.java
+  h_5d8a431fb8293b 1-36
+code/rest-clients/product/src/test/java/com/inditex/devtest/mapper/ProductMapperTest.java
+  h_5d8a431fb8293b 1-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7195a783dae4bb9f31c114a146bfd81c8b6b8a7f",
+  "prompts": {},
+  "humans": {
+    "h_5d8a431fb8293b": {
+      "author": "rasrov <rasulaa@ext.inditex.com>"
+    }
+  }
+}
