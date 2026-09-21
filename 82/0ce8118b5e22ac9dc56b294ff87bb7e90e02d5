@@ -1,0 +1,88 @@
+code/application/src/main/java/com/inditex/devtest/usecase/SerchSimilarProductUseCaseImpl.java
+  h_5d8a431fb8293b 1-30
+code/boot/pom.xml
+  h_5d8a431fb8293b 16-21,38-47
+code/boot/src/main/java/com/inditex/devtest/Application.java
+  h_5d8a431fb8293b 5,8
+code/boot/src/main/resources/application.yaml
+  h_5d8a431fb8293b 4-10,28-32
+code/common/pom.xml
+  h_5d8a431fb8293b 1-43
+code/common/src/main/java/com/inditex/devtest/config/ExecutorServiceConfiguration.java
+  h_5d8a431fb8293b 1-19
+code/common/src/main/java/com/inditex/devtest/exception/RestClientErrorMapper.java
+  h_5d8a431fb8293b 1-53
+code/common/src/main/java/com/inditex/devtest/service/InvokerServiceImpl.java
+  h_5d8a431fb8293b 1-23
+code/common/src/main/java/com/inditex/devtest/service/ParallelTaskExecutorImpl.java
+  h_5d8a431fb8293b 1-40
+code/domain/src/main/java/com/inditex/devtest/application/InvokerService.java
+  h_5d8a431fb8293b 1-12
+code/domain/src/main/java/com/inditex/devtest/application/ParallelTaskExecutor.java
+  h_5d8a431fb8293b 1-11
+code/domain/src/main/java/com/inditex/devtest/exception/DomainException.java
+  h_5d8a431fb8293b 1-47
+code/domain/src/main/java/com/inditex/devtest/exception/NotFoundException.java
+  h_5d8a431fb8293b 1-21
+code/domain/src/main/java/com/inditex/devtest/exception/RemoteException.java
+  h_5d8a431fb8293b 1-20
+code/domain/src/main/java/com/inditex/devtest/exception/rest/AccessDeniedException.java
+  h_5d8a431fb8293b 1-30
+code/domain/src/main/java/com/inditex/devtest/exception/rest/AuthenticationExpiredException.java
+  h_5d8a431fb8293b 1-32
+code/domain/src/main/java/com/inditex/devtest/exception/rest/BadRequestException.java
+  h_5d8a431fb8293b 1-23
+code/domain/src/main/java/com/inditex/devtest/exception/rest/ErrorCode.java
+  h_5d8a431fb8293b 1-10
+code/domain/src/main/java/com/inditex/devtest/exception/rest/RestClientErrorCode.java
+  h_5d8a431fb8293b 1-39
+code/domain/src/main/java/com/inditex/devtest/exception/rest/UnprocessableEntityException.java
+  h_5d8a431fb8293b 1-26
+code/domain/src/main/java/com/inditex/devtest/model/product/Product.java
+  h_5d8a431fb8293b 1-8
+code/domain/src/main/java/com/inditex/devtest/model/product/ProductEntity.java
+  h_5d8a431fb8293b 1-26
+code/domain/src/main/java/com/inditex/devtest/port/input/product/SearchSimilarProductUseCase.java
+  h_5d8a431fb8293b 1-12
+code/domain/src/main/java/com/inditex/devtest/port/output/ProductPort.java
+  h_5d8a431fb8293b 1-15
+code/infrastructure/src/main/java/com/inditex/devtest/handler/GlobalProblemDetailHandler.java
+  h_5d8a431fb8293b 1-53
+code/infrastructure/src/main/java/com/inditex/devtest/input/rest/ProductController.java
+  h_5d8a431fb8293b 1-30
+code/pom.xml
+  h_5d8a431fb8293b 24,33,59-64,77-94
+code/rest-clients/pom.xml
+  h_5d8a431fb8293b 13,15-17
+code/rest-clients/product/pom.xml
+  h_5d8a431fb8293b 1-31
+code/rest-clients/product/src/main/java/com/inditex/devtest/ProductAdapter.java
+  h_5d8a431fb8293b 1-94
+code/rest-clients/product/src/main/java/com/inditex/devtest/config/ProductConfiguration.java
+  h_5d8a431fb8293b 1-26
+code/rest-clients/product/src/main/java/com/inditex/devtest/mapper/ProductMapper.java
+  h_5d8a431fb8293b 1-12
+code/rest-clients/product/src/main/resources/application.yaml
+  h_5d8a431fb8293b 1-33
+code/src/test/resources/compose/docker-compose.yaml
+  h_5d8a431fb8293b 35-41
+code/src/test/resources/compose/shared/grafana/dashboards/dashboard.yaml
+  h_5d8a431fb8293b 1-11
+code/src/test/resources/compose/shared/grafana/dashboards/performance-test-dasboard.json
+  h_5d8a431fb8293b 1-444
+code/src/test/resources/compose/shared/grafana/datasources/datasource.yaml
+  h_5d8a431fb8293b 1-10
+code/src/test/resources/compose/shared/k6/test.js
+  h_5d8a431fb8293b 1-73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "820ce8118b5e22ac9dc56b294ff87bb7e90e02d5",
+  "prompts": {},
+  "humans": {
+    "h_5d8a431fb8293b": {
+      "author": "rasrov <rasulaa@ext.inditex.com>"
+    }
+  }
+}
