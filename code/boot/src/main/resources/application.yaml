@@ -1,6 +1,13 @@
 spring:
   application:
     name: devtest
+  profiles:
+    active: local
+  data:
+    redis:
+        host: localhost
+        port: 31110
+        timeout: 5s
 
 server:
   port: 5000
@@ -18,3 +25,8 @@ management:
   endpoint:
     health:
       show-details: always
+
+rest-clients:
+  product:
+    base-url: http://localhost:3001
+    auth-method: NONE

@@ -33,3 +33,9 @@ services:
       - K6_OUT=influxdb=http://influxdb:8086/k6
     extra_hosts:
       - "host.docker.internal:host-gateway"
+  redis:
+    image: inditex-docker.jfrog.io/devenv/redis:8.4.0-r0
+    ports:
+      - "31110:6379"
+    environment:
+      - "REDIS_CONFIG=/tmp/redis.conf"

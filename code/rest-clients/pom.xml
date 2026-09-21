@@ -10,15 +10,10 @@
     </parent>
 
     <artifactId>devtest-rest-client</artifactId>
+    <packaging>pom</packaging>
 
-
-    <dependencies>
-        <!-- Internal modules -->
-        <dependency>
-            <groupId>com.inditex.devtest</groupId>
-            <artifactId>devtest-domain</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>product</module>
+    </modules>
 
 </project>

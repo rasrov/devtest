@@ -13,6 +13,12 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!-- Spring Boot Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
         <!-- Internal modules -->
         <dependency>
             <groupId>com.inditex.devtest</groupId>
@@ -27,6 +33,16 @@
         <dependency>
             <groupId>com.inditex.devtest</groupId>
             <artifactId>devtest-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.inditex.devtest</groupId>
+            <artifactId>product-rest-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.inditex.devtest</groupId>
+            <artifactId>devtest-common</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
