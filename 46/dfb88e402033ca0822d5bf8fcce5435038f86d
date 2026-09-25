@@ -1,0 +1,21 @@
+code/application/src/main/java/com/inditex/devtest/usecase/SearchSimilarProductUseCaseImpl.java
+  s_1463d80a6d6175::t_514e659ded4000 3,7-9,12-13,17-18,20,23,25,27,29-31,33-54
+code/boot/src/test/java/com/inditex/devtest/ProductSimilarIT.java
+  s_1463d80a6d6175::t_0ba70d1ddfb3ce 1-234
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "46dfb88e402033ca0822d5bf8fcce5435038f86d",
+  "prompts": {},
+  "sessions": {
+    "s_1463d80a6d6175": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f281bd26effeh2AvqvUCR6jzCw",
+        "model": "claude-opus-4.8-fast"
+      },
+      "human_author": "rasrov <rasulaa@ext.inditex.com>"
+    }
+  }
+}
