@@ -3,13 +3,12 @@ package com.inditex.devtest.port.output;
 import com.inditex.devtest.model.product.Product;
 import jakarta.annotation.Nonnull;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 public interface ProductPort {
 
-    List<Integer> fetchSimilarProductIds(@Nonnull Integer productId);
+	Set<String> fetchSimilarProductIds(@Nonnull String productId);
 
-    Optional<Product> fetchProductById(@Nonnull Integer productId);
+	Product fetchProductById(@Nonnull String productId);
 
 }

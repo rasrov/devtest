@@ -10,12 +10,6 @@ public enum RestClientErrorCode implements ErrorCode {
 
   UNPROCESSABLE_ENTITY("UNPROCESSABLE_ENTITY", "The request could not be processed."),
 
-  AUTHENTICATION_EXPIRED("AUTHENTICATION_EXPIRED", "Authentication has expired. Please renew your session."),
-
-  ACCESS_DENIED("ACCESS_DENIED", "You do not have permission to access this resource."),
-
-  VERSION_CONFLICT("VERSION_CONFLICT", "Stale version detected. Reload the resource and retry your request."),
-
   REMOTE_API_ERROR("REMOTE_API_ERROR", "An error occurred while communicating with an external service.");
 
   private final String code;

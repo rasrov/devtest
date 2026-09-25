@@ -1,188 +1,174 @@
 package com.inditex.devtest;
 
-import com.inditex.devtest.application.InvokerService;
 import com.inditex.devtest.exception.NotFoundException;
 import com.inditex.devtest.exception.RemoteException;
-import com.inditex.devtest.exception.rest.BadRequestException;
-import com.inditex.devtest.mapper.ProductMapper;
+import com.inditex.devtest.mapper.ProductClientMapper;
 import com.inditex.devtest.model.product.Product;
-import com.inditex.devtest.model.product.ProductEntity;
-import org.junit.jupiter.api.DisplayName;
+import com.inditex.devtest.product.client.api.DefaultApi;
+import com.inditex.devtest.product.client.model.ProductDetail;
+import com.inditex.devtest.service.InvokerService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.RestClient;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("ProductAdapter Tests")
 class ProductAdapterTest {
 
-	@Mock
-	private RestClient productRestClient;
+	private ProductAdapter productAdapter;
 
 	@Mock
-	private ProductMapper productMapper;
+	private DefaultApi defaultApi;
+
+	@Mock
+	private ProductClientMapper productMapper;
 
 	@Mock
 	private InvokerService invokerService;
 
-	@InjectMocks
-	private ProductAdapter productAdapter;
-
-	private static final Integer PRODUCT_ID = 1;
-
-	// ---------- fetchSimilarProductIds ----------
-
-	@Test
-	@DisplayName("fetchSimilarProductIds debe devolver la lista de ids")
-	void shouldFetchSimilarProductIds() {
-		// Arrange
-		final List<Integer> ids = List.of(2, 3, 4);
-		when(this.invokerService.<List<Integer>>invoke(any(), any()))
-				.thenReturn(ids);
-
-		// Act
-		final List<Integer> result = this.productAdapter.fetchSimilarProductIds(PRODUCT_ID);
-
-		// Assert
-		assertEquals(ids, result);
-		verify(this.invokerService, times(1)).invoke(any(), any());
+	@BeforeEach
+	void beforeEach() {
+		this.productAdapter = new ProductAdapter(this.defaultApi, this.productMapper, this.invokerService);
 	}
 
-	@Test
-	@DisplayName("fetchSimilarProductIds debe lanzar NotFoundException cuando el remoto responde 404")
-	void shouldThrowNotFoundWhenSimilarIdsNotFound() {
-		// Arrange
-		final RemoteException remote = new RemoteException("not found", HttpStatus.NOT_FOUND.value(), new RuntimeException());
-		when(this.invokerService.<List<Integer>>invoke(any(), any()))
-				.thenThrow(remote);
-
-		// Act & Assert
-		assertThrows(NotFoundException.class, () -> this.productAdapter.fetchSimilarProductIds(PRODUCT_ID));
+	@SuppressWarnings("unchecked")
+	private <T> void whenInvokerReturns(final T value) {
+		when(this.invokerService.invoke(any(Supplier.class), any(Function.class))).thenReturn(value);
 	}
 
-	@Test
-	@DisplayName("fetchSimilarProductIds debe propagar el error mapeado cuando el remoto responde 400")
-	void shouldPropagateMappedErrorWhenSimilarIdsBadRequest() {
-		// Arrange
-		final RemoteException remote = new RemoteException("bad request", HttpStatus.BAD_REQUEST.value(), new RuntimeException());
-		when(this.invokerService.<List<Integer>>invoke(any(), any()))
-				.thenThrow(remote);
-
-		// Act & Assert
-		assertThrows(BadRequestException.class, () -> this.productAdapter.fetchSimilarProductIds(PRODUCT_ID));
+	@SuppressWarnings("unchecked")
+	private void whenInvokerThrows(final RuntimeException exception) {
+		when(this.invokerService.invoke(any(Supplier.class), any(Function.class))).thenThrow(exception);
 	}
 
-	@Test
-	@DisplayName("fetchSimilarProductIds debe propagar RemoteException cuando el remoto responde 500")
-	void shouldPropagateRemoteExceptionWhenSimilarIdsServerError() {
-		// Arrange
-		final RemoteException remote = new RemoteException("server error", HttpStatus.INTERNAL_SERVER_ERROR.value(), new RuntimeException());
-		when(this.invokerService.<List<Integer>>invoke(any(), any()))
-				.thenThrow(remote);
-
-		// Act & Assert
-		assertThrows(RemoteException.class, () -> this.productAdapter.fetchSimilarProductIds(PRODUCT_ID));
+	private static Product product(final String id) {
+		return new Product(id, "Product " + id, new BigDecimal("19.99"), true);
 	}
 
-	// ---------- fetchProductById ----------
+	@Nested
+	class FetchSimilarProductIds {
 
-	@Test
-	@DisplayName("fetchProductById debe devolver el producto mapeado")
-	void shouldFetchProductById() {
-		// Arrange
-		final ProductEntity entity = new ProductEntity(PRODUCT_ID, "Product 1", 19.99, Boolean.TRUE);
-		final Product product = new Product(PRODUCT_ID, "Product 1", 19.99, Boolean.TRUE);
-		when(this.invokerService.<Optional<ProductEntity>>invoke(any(), any()))
-				.thenReturn(Optional.of(entity));
-		when(this.productMapper.toProduct(entity)).thenReturn(product);
+		@Test
+		void when_ids_returned_expect_them() {
+			whenInvokerReturns(Set.of("2", "3"));
 
-		// Act
-		final Optional<Product> result = this.productAdapter.fetchProductById(PRODUCT_ID);
+			final Set<String> result = productAdapter.fetchSimilarProductIds("1");
 
-		// Assert
-		assertTrue(result.isPresent());
-		assertEquals(product, result.get());
-		verify(this.productMapper, times(1)).toProduct(entity);
+			assertThat(result).containsExactlyInAnyOrder("2", "3");
+		}
+
+		@Test
+		void when_upstream_returns_404_expect_not_found_exception() {
+			whenInvokerThrows(new RemoteException("upstream 404", HttpStatus.NOT_FOUND.value(), null));
+
+			final Throwable thrown = catchThrowable(() -> productAdapter.fetchSimilarProductIds("1"));
+
+			assertThat(thrown).isInstanceOf(NotFoundException.class);
+		}
+
+		@Test
+		void when_upstream_returns_other_error_expect_remote_exception_propagated() {
+			final RemoteException remoteException = new RemoteException("upstream 500",
+					HttpStatus.BAD_GATEWAY.value(), null);
+			whenInvokerThrows(remoteException);
+
+			assertThatThrownBy(() -> productAdapter.fetchSimilarProductIds("1")).isSameAs(remoteException);
+		}
 	}
 
-	@Test
-	@DisplayName("fetchProductById debe devolver Optional vacío cuando el remoto devuelve vacío")
-	void shouldReturnEmptyWhenRemoteReturnsEmpty() {
-		// Arrange
-		when(this.invokerService.<Optional<ProductEntity>>invoke(any(), any()))
-				.thenReturn(Optional.empty());
+	@Nested
+	class FetchProductById {
 
-		// Act
-		final Optional<Product> result = this.productAdapter.fetchProductById(PRODUCT_ID);
+		@Test
+		void when_detail_returned_expect_mapped_product() {
+			final ProductDetail detail = new ProductDetail();
+			whenInvokerReturns(detail);
+			when(productMapper.toProduct(detail)).thenReturn(product("1"));
 
-		// Assert
-		assertTrue(result.isEmpty());
+			final Product result = productAdapter.fetchProductById("1");
+
+			assertThat(result).isEqualTo(product("1"));
+			verify(productMapper, times(1)).toProduct(detail);
+		}
+
+		@Test
+		void when_upstream_returns_404_expect_not_found_exception() {
+			whenInvokerThrows(new RemoteException("upstream 404", HttpStatus.NOT_FOUND.value(), null));
+
+			final Throwable thrown = catchThrowable(() -> productAdapter.fetchProductById("1"));
+
+			assertThat(thrown).isInstanceOf(NotFoundException.class);
+		}
+
+		@Test
+		void when_upstream_returns_other_error_expect_remote_exception_propagated() {
+			final RemoteException remoteException = new RemoteException("upstream 500",
+					HttpStatus.BAD_GATEWAY.value(), null);
+			whenInvokerThrows(remoteException);
+
+			assertThatThrownBy(() -> productAdapter.fetchProductById("1")).isSameAs(remoteException);
+		}
 	}
 
-	@Test
-	@DisplayName("fetchProductById debe devolver Optional vacío cuando el remoto responde 404")
-	void shouldReturnEmptyWhenProductNotFound() {
-		// Arrange
-		final RemoteException remote = new RemoteException("not found", HttpStatus.NOT_FOUND.value(), new RuntimeException());
-		when(this.invokerService.<Optional<ProductEntity>>invoke(any(), any()))
-				.thenThrow(remote);
+	@Nested
+	class Fallback {
 
-		// Act
-		final Optional<Product> result = this.productAdapter.fetchProductById(PRODUCT_ID);
+		@Test
+		void when_fallback_receives_not_found_expect_it_propagated_unchanged() {
+			final NotFoundException notFound = new NotFoundException("legitimate absence");
 
-		// Assert
-		assertTrue(result.isEmpty());
-	}
+			final Throwable thrown = catchThrowable(
+					() -> productAdapter.fetchSimilarProductIdsFallback("1", notFound));
 
-	@Test
-	@DisplayName("fetchProductById debe propagar el error mapeado cuando el remoto responde 400")
-	void shouldPropagateMappedErrorWhenProductBadRequest() {
-		// Arrange
-		final RemoteException remote = new RemoteException("bad request", HttpStatus.BAD_REQUEST.value(), new RuntimeException());
-		when(this.invokerService.<Optional<ProductEntity>>invoke(any(), any()))
-				.thenThrow(remote);
+			assertThat(thrown).isSameAs(notFound);
+		}
 
-		// Act & Assert
-		assertThrows(BadRequestException.class, () -> this.productAdapter.fetchProductById(PRODUCT_ID));
-	}
+		@Test
+		void when_detail_fallback_receives_not_found_expect_it_propagated_unchanged() {
+			final NotFoundException notFound = new NotFoundException("legitimate absence");
 
-	// ---------- fallbacks ----------
+			final Throwable thrown = catchThrowable(() -> productAdapter.fetchProductByIdFallback("1", notFound));
 
-	@Test
-	@DisplayName("fetchSimilarProductIdsFallback debe lanzar el error mapeado")
-	void shouldThrowOnSimilarIdsFallback() {
-		// Arrange
-		final RemoteException remote = new RemoteException("bad request", HttpStatus.BAD_REQUEST.value(), new RuntimeException());
+			assertThat(thrown).isSameAs(notFound);
+		}
 
-		// Act & Assert
-		assertThrows(BadRequestException.class,
-				() -> this.productAdapter.fetchSimilarProductIdsFallback(PRODUCT_ID, remote));
-	}
+		@Test
+		void when_fallback_receives_remote_exception_expect_remote_exception() {
+			final RemoteException remoteException = new RemoteException("upstream error",
+					HttpStatus.BAD_GATEWAY.value(), null);
 
-	@Test
-	@DisplayName("fetchProductByIdFallback debe lanzar el error mapeado")
-	void shouldThrowOnProductByIdFallback() {
-		// Arrange
-		final RemoteException remote = new RemoteException("bad request", HttpStatus.BAD_REQUEST.value(), new RuntimeException());
+			final Throwable thrown = catchThrowable(
+					() -> productAdapter.fetchSimilarProductIdsFallback("1", remoteException));
 
-		// Act & Assert
-		assertThrows(BadRequestException.class,
-				() -> this.productAdapter.fetchProductByIdFallback(PRODUCT_ID, remote));
+			assertThat(thrown).isSameAs(remoteException);
+		}
+
+		@Test
+		void when_fallback_receives_other_throwable_expect_wrapped_as_remote_exception() {
+			final Throwable circuitOpen = new IllegalStateException("circuit open");
+
+			final Throwable thrown = catchThrowable(
+					() -> productAdapter.fetchSimilarProductIdsFallback("1", circuitOpen));
+
+			assertThat(thrown).isInstanceOf(RemoteException.class);
+			assertThat(((RemoteException) thrown).getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());
+			assertThat(thrown.getCause()).isSameAs(circuitOpen);
+		}
 	}
 }
-

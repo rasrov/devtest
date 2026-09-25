@@ -1,0 +1,40 @@
+spring:
+  # Redis no debe ser una dependencia dura en los tests de integración: se excluye
+  # su autoconfiguración para que el contexto arranque sin un Redis real.
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+  # Cache desactivada (NoOpCacheManager): satisface @EnableCaching sin cachear nada,
+  # de modo que cada escenario reject la llamada real al BC simulado y no hay
+  # contaminación entre tests que reutilizan el mismo productId con distintos stubs.
+  cache:
+    type: none
+
+rest-clients:
+  product:
+    # base-url lo fija dinámicamente el test apuntando al servidor WireMock.
+    base-url: http://localhost:0
+    connect-timeout: 300ms
+    read-timeout: 400ms
+    max-concurrent-calls: 50
+    # Timeout global por petición reducida para que los escenarios "lento/muy lento"
+    # se resuelvan en milisegundos y el test sea rápido y determinista.
+    global-timeout: 500ms
+
+# Resilience neutralizado en test: este IT valida el flujo funcional
+# (executor paralelo, respuestas parciales, mapeo de errores y contrato OpenAPI),
+# no la mecánica de retry/circuit-breaker (que se cubre en el unit test del adapter).
+# 1 intento y un circuito que no se abre => comportamiento determinista entre escenarios.
+resilience4j:
+  retry:
+    instances:
+      product_external_api:
+        max-attempts: 1
+  circuitbreaker:
+    instances:
+      product_external_api:
+        register-health-indicator: false
+        sliding-window-size: 100
+        minimum-number-of-calls: 1000
+        failure-rate-threshold: 100

@@ -1,4 +1,4 @@
-package com.inditex.devtest.application;
+package com.inditex.devtest.service;
 
 import com.inditex.devtest.exception.RemoteException;
 

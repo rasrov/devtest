@@ -34,8 +34,6 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
   redis:
-    image: inditex-docker.jfrog.io/devenv/redis:8.4.0-r0
+    image: redis:8-alpine
     ports:
       - "31110:6379"
-    environment:
-      - "REDIS_CONFIG=/tmp/redis.conf"

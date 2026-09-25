@@ -1,12 +1,12 @@
 package com.inditex.devtest.mapper;
 
 import com.inditex.devtest.model.product.Product;
-import com.inditex.devtest.model.product.ProductEntity;
+import com.inditex.devtest.product.client.model.ProductDetail;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface ProductMapper {
+public interface ProductClientMapper {
 
-	Product toProduct(ProductEntity productEntity);
+	Product toProduct(ProductDetail productDetail);
 
 }

@@ -3,10 +3,10 @@ package com.inditex.devtest.port.input.product;
 import com.inditex.devtest.model.product.Product;
 import jakarta.annotation.Nonnull;
 
-import java.util.List;
+import java.util.Set;
 
 public interface SearchSimilarProductUseCase {
 
-    List<Product> fetchSimilarProducts(@Nonnull Integer id);
+	Set<Product> fetchSimilarProducts(@Nonnull String id);
 
 }

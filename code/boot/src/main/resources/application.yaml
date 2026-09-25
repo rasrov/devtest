@@ -11,8 +11,6 @@ spring:
 
 server:
   port: 5000
-  error:
-    include-message: always
 
 management:
   metrics:
@@ -29,4 +27,33 @@ management:
 rest-clients:
   product:
     base-url: http://localhost:3001
-    auth-method: NONE
+    connect-timeout: 5s
+    read-timeout: 5s
+    max-concurrent-calls: 50
+    global-timeout: 6s
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      product_external_api:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - com.inditex.devtest.exception.RemoteException
+  retry:
+    instances:
+      product_external_api:
+        maxAttempts: 3
+        waitDuration: 250ms
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        exponentialMaxWaitDuration: 1s
+        retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - com.inditex.devtest.exception.RemoteException

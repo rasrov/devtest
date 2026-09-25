@@ -48,26 +48,26 @@ export let options = {
 const host = "http://host.docker.internal:5000";
 
 export function normal() {
-  http.get(host + "/products/1/similar");
+  http.get(host + "/product/1/similar");
   sleep(0.5);
 }
 
 export function slow() {
-  http.get(host + "/products/2/similar");
+  http.get(host + "/product/2/similar");
   sleep(0.5);
 }
 
 export function verySlow() {
-  http.get(host + "/products/3/similar");
+  http.get(host + "/product/3/similar");
   sleep(0.5);
 }
 
 export function notFound() {
-  http.get(host + "/products/4/similar");
+  http.get(host + "/product/4/similar");
   sleep(0.5);
 }
 
 export function error() {
-  http.get(host + "/products/5/similar");
+  http.get(host + "/product/5/similar");
   sleep(0.5);
 }

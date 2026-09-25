@@ -1,26 +1,29 @@
 package com.inditex.devtest.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
-import org.springframework.boot.http.client.ClientHttpRequestFactorySettings;
+import com.inditex.devtest.product.client.ApiClient;
+import com.inditex.devtest.product.client.api.DefaultApi;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestClient;
-
-import java.time.Duration;
 
 @Configuration
+@EnableConfigurationProperties(ProductClientConfig.class)
 public class ProductConfiguration {
 
-    @Bean
-    public RestClient productRestClient(@Value("${rest-clients.product.base-url}") final String baseUrl) {
-        final var settings = ClientHttpRequestFactorySettings.defaults()
-                .withConnectTimeout(Duration.ofSeconds(2))
-                .withReadTimeout(Duration.ofSeconds(3));
+	@Bean
+	public ApiClient productApiClient(final ProductClientConfig productClientConfig,
+			final RestTemplateBuilder restTemplateBuilder) {
+		final var restTemplate = restTemplateBuilder.connectTimeout(productClientConfig.connectTimeout())
+				.readTimeout(productClientConfig.readTimeout()).build();
 
-        return RestClient.builder()
-                .requestFactory(ClientHttpRequestFactoryBuilder.detect().build(settings))
-                .baseUrl(baseUrl)
-                .build();
-    }
+		final var apiClient = new ApiClient(restTemplate);
+		apiClient.setBasePath(productClientConfig.baseUrl());
+		return apiClient;
+	}
+
+	@Bean
+	public DefaultApi productDefaultApi(final ApiClient productApiClient) {
+		return new DefaultApi(productApiClient);
+	}
 }
