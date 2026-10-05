@@ -68,8 +68,8 @@ class RestClientErrorMapperTest {
 
 		@Test
 		void when_remote_exception_expect_same_instance_rethrown() {
-			final RemoteException remoteException = new RemoteException("upstream error", HttpStatus.BAD_GATEWAY.value(),
-					null);
+			final RemoteException remoteException = new RemoteException("upstream error",
+					HttpStatus.BAD_GATEWAY.value(), null);
 
 			assertThatThrownBy(() -> RestClientErrorMapper.handleRemoteException(remoteException, BC))
 					.isSameAs(remoteException);

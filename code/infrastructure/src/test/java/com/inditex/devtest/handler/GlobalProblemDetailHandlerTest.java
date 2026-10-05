@@ -35,7 +35,8 @@ class GlobalProblemDetailHandlerTest {
 		void when_bad_request_expect_400_with_error_code_and_message() {
 			final BadRequestException ex = new BadRequestException("Invalid input");
 
-			final ResponseEntity<ProblemDetail> response = handler.handleBadRequestException(ex);
+			final ResponseEntity<ProblemDetail> response = GlobalProblemDetailHandlerTest.this.handler
+					.handleBadRequestException(ex);
 
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 			assertThat(response.getBody()).isNotNull().satisfies(body -> {
@@ -56,7 +57,8 @@ class GlobalProblemDetailHandlerTest {
 		void when_not_found_expect_404_without_error_code_properties() {
 			final NotFoundException ex = new NotFoundException("Product not found");
 
-			final ResponseEntity<ProblemDetail> response = handler.handleNotFoundException(ex);
+			final ResponseEntity<ProblemDetail> response = GlobalProblemDetailHandlerTest.this.handler
+					.handleNotFoundException(ex);
 
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 			assertThat(response.getBody()).isNotNull().satisfies(body -> {
@@ -77,14 +79,15 @@ class GlobalProblemDetailHandlerTest {
 			final DomainException ex = new DomainException("Business rule violated",
 					RestClientErrorCode.UNPROCESSABLE_ENTITY);
 
-			final ResponseEntity<ProblemDetail> response = handler.handleDomainException(ex);
+			final ResponseEntity<ProblemDetail> response = GlobalProblemDetailHandlerTest.this.handler
+					.handleDomainException(ex);
 
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 			assertThat(response.getBody()).isNotNull().satisfies(body -> {
 				assertThat(body.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
 				assertThat(body.getDetail()).isEqualTo("Business rule violated");
-				assertThat(body.getType())
-						.isEqualTo(URI.create(String.format(STATUS_CODES_URL, HttpStatus.UNPROCESSABLE_ENTITY.value())));
+				assertThat(body.getType()).isEqualTo(
+						URI.create(String.format(STATUS_CODES_URL, HttpStatus.UNPROCESSABLE_ENTITY.value())));
 				assertThat(body.getProperties())
 						.containsEntry("errorCode", RestClientErrorCode.UNPROCESSABLE_ENTITY.code())
 						.containsEntry("message", RestClientErrorCode.UNPROCESSABLE_ENTITY.message());
@@ -95,7 +98,8 @@ class GlobalProblemDetailHandlerTest {
 		void when_domain_error_without_error_code_expect_422_without_properties() {
 			final DomainException ex = new DomainException("Generic domain error");
 
-			final ResponseEntity<ProblemDetail> response = handler.handleDomainException(ex);
+			final ResponseEntity<ProblemDetail> response = GlobalProblemDetailHandlerTest.this.handler
+					.handleDomainException(ex);
 
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 			assertThat(response.getBody()).isNotNull().satisfies(body -> {
@@ -112,7 +116,8 @@ class GlobalProblemDetailHandlerTest {
 		void when_remote_error_expect_502_with_detail_overridden_by_remote_api_error() {
 			final RemoteException ex = new RemoteException("Upstream timeout", 504, new RuntimeException("cause"));
 
-			final ResponseEntity<ProblemDetail> response = handler.handleRemoteException(ex);
+			final ResponseEntity<ProblemDetail> response = GlobalProblemDetailHandlerTest.this.handler
+					.handleRemoteException(ex);
 
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_GATEWAY);
 			assertThat(response.getBody()).isNotNull().satisfies(body -> {
@@ -120,8 +125,7 @@ class GlobalProblemDetailHandlerTest {
 				assertThat(body.getType())
 						.isEqualTo(URI.create(String.format(STATUS_CODES_URL, HttpStatus.BAD_GATEWAY.value())));
 				assertThat(body.getDetail()).isEqualTo(RestClientErrorCode.REMOTE_API_ERROR.message());
-				assertThat(body.getProperties())
-						.containsEntry("errorCode", RestClientErrorCode.REMOTE_API_ERROR.code())
+				assertThat(body.getProperties()).containsEntry("errorCode", RestClientErrorCode.REMOTE_API_ERROR.code())
 						.containsEntry("message", RestClientErrorCode.REMOTE_API_ERROR.message());
 			});
 		}
@@ -134,7 +138,8 @@ class GlobalProblemDetailHandlerTest {
 		void when_invalid_parameter_expect_400_without_error_code_properties() {
 			final InvalidParameterException ex = new InvalidParameterException("Invalid parameter");
 
-			final ResponseEntity<ProblemDetail> response = handler.handleInvalidParameterException(ex);
+			final ResponseEntity<ProblemDetail> response = GlobalProblemDetailHandlerTest.this.handler
+					.handleInvalidParameterException(ex);
 
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 			assertThat(response.getBody()).isNotNull().satisfies(body -> {

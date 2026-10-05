@@ -20,13 +20,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductAdapterTest {
@@ -66,29 +62,32 @@ class ProductAdapterTest {
 
 		@Test
 		void when_ids_returned_expect_them() {
-			whenInvokerReturns(Set.of("2", "3"));
+			ProductAdapterTest.this.whenInvokerReturns(Set.of("2", "3"));
 
-			final Set<String> result = productAdapter.fetchSimilarProductIds("1");
+			final Set<String> result = ProductAdapterTest.this.productAdapter.fetchSimilarProductIds("1");
 
 			assertThat(result).containsExactlyInAnyOrder("2", "3");
 		}
 
 		@Test
 		void when_upstream_returns_404_expect_not_found_exception() {
-			whenInvokerThrows(new RemoteException("upstream 404", HttpStatus.NOT_FOUND.value(), null));
+			ProductAdapterTest.this
+					.whenInvokerThrows(new RemoteException("upstream 404", HttpStatus.NOT_FOUND.value(), null));
 
-			final Throwable thrown = catchThrowable(() -> productAdapter.fetchSimilarProductIds("1"));
+			final Throwable thrown = catchThrowable(
+					() -> ProductAdapterTest.this.productAdapter.fetchSimilarProductIds("1"));
 
 			assertThat(thrown).isInstanceOf(NotFoundException.class);
 		}
 
 		@Test
 		void when_upstream_returns_other_error_expect_remote_exception_propagated() {
-			final RemoteException remoteException = new RemoteException("upstream 500",
-					HttpStatus.BAD_GATEWAY.value(), null);
-			whenInvokerThrows(remoteException);
+			final RemoteException remoteException = new RemoteException("upstream 500", HttpStatus.BAD_GATEWAY.value(),
+					null);
+			ProductAdapterTest.this.whenInvokerThrows(remoteException);
 
-			assertThatThrownBy(() -> productAdapter.fetchSimilarProductIds("1")).isSameAs(remoteException);
+			assertThatThrownBy(() -> ProductAdapterTest.this.productAdapter.fetchSimilarProductIds("1"))
+					.isSameAs(remoteException);
 		}
 	}
 
@@ -98,31 +97,33 @@ class ProductAdapterTest {
 		@Test
 		void when_detail_returned_expect_mapped_product() {
 			final ProductDetail detail = new ProductDetail();
-			whenInvokerReturns(detail);
-			when(productMapper.toProduct(detail)).thenReturn(product("1"));
+			ProductAdapterTest.this.whenInvokerReturns(detail);
+			when(ProductAdapterTest.this.productMapper.toProduct(detail)).thenReturn(product("1"));
 
-			final Product result = productAdapter.fetchProductById("1");
+			final Product result = ProductAdapterTest.this.productAdapter.fetchProductById("1");
 
 			assertThat(result).isEqualTo(product("1"));
-			verify(productMapper, times(1)).toProduct(detail);
+			verify(ProductAdapterTest.this.productMapper, times(1)).toProduct(detail);
 		}
 
 		@Test
 		void when_upstream_returns_404_expect_not_found_exception() {
-			whenInvokerThrows(new RemoteException("upstream 404", HttpStatus.NOT_FOUND.value(), null));
+			ProductAdapterTest.this
+					.whenInvokerThrows(new RemoteException("upstream 404", HttpStatus.NOT_FOUND.value(), null));
 
-			final Throwable thrown = catchThrowable(() -> productAdapter.fetchProductById("1"));
+			final Throwable thrown = catchThrowable(() -> ProductAdapterTest.this.productAdapter.fetchProductById("1"));
 
 			assertThat(thrown).isInstanceOf(NotFoundException.class);
 		}
 
 		@Test
 		void when_upstream_returns_other_error_expect_remote_exception_propagated() {
-			final RemoteException remoteException = new RemoteException("upstream 500",
-					HttpStatus.BAD_GATEWAY.value(), null);
-			whenInvokerThrows(remoteException);
+			final RemoteException remoteException = new RemoteException("upstream 500", HttpStatus.BAD_GATEWAY.value(),
+					null);
+			ProductAdapterTest.this.whenInvokerThrows(remoteException);
 
-			assertThatThrownBy(() -> productAdapter.fetchProductById("1")).isSameAs(remoteException);
+			assertThatThrownBy(() -> ProductAdapterTest.this.productAdapter.fetchProductById("1"))
+					.isSameAs(remoteException);
 		}
 	}
 
@@ -134,7 +135,7 @@ class ProductAdapterTest {
 			final NotFoundException notFound = new NotFoundException("legitimate absence");
 
 			final Throwable thrown = catchThrowable(
-					() -> productAdapter.fetchSimilarProductIdsFallback("1", notFound));
+					() -> ProductAdapterTest.this.productAdapter.fetchSimilarProductIdsFallback("1", notFound));
 
 			assertThat(thrown).isSameAs(notFound);
 		}
@@ -143,7 +144,8 @@ class ProductAdapterTest {
 		void when_detail_fallback_receives_not_found_expect_it_propagated_unchanged() {
 			final NotFoundException notFound = new NotFoundException("legitimate absence");
 
-			final Throwable thrown = catchThrowable(() -> productAdapter.fetchProductByIdFallback("1", notFound));
+			final Throwable thrown = catchThrowable(
+					() -> ProductAdapterTest.this.productAdapter.fetchProductByIdFallback("1", notFound));
 
 			assertThat(thrown).isSameAs(notFound);
 		}
@@ -154,7 +156,7 @@ class ProductAdapterTest {
 					HttpStatus.BAD_GATEWAY.value(), null);
 
 			final Throwable thrown = catchThrowable(
-					() -> productAdapter.fetchSimilarProductIdsFallback("1", remoteException));
+					() -> ProductAdapterTest.this.productAdapter.fetchSimilarProductIdsFallback("1", remoteException));
 
 			assertThat(thrown).isSameAs(remoteException);
 		}
@@ -164,7 +166,7 @@ class ProductAdapterTest {
 			final Throwable circuitOpen = new IllegalStateException("circuit open");
 
 			final Throwable thrown = catchThrowable(
-					() -> productAdapter.fetchSimilarProductIdsFallback("1", circuitOpen));
+					() -> ProductAdapterTest.this.productAdapter.fetchSimilarProductIdsFallback("1", circuitOpen));
 
 			assertThat(thrown).isInstanceOf(RemoteException.class);
 			assertThat(((RemoteException) thrown).getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());

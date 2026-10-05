@@ -32,7 +32,7 @@ class ProductClientMapperTest {
 		void when_full_detail_expect_all_fields_mapped() {
 			final ProductDetail source = detail("1", "Shirt", new BigDecimal("9.99"), true);
 
-			final Product result = mapper.toProduct(source);
+			final Product result = ProductClientMapperTest.this.mapper.toProduct(source);
 
 			assertThat(result).isNotNull();
 			assertThat(result.id()).isEqualTo("1");
@@ -43,7 +43,7 @@ class ProductClientMapperTest {
 
 		@Test
 		void when_null_detail_expect_null_product() {
-			final Product result = mapper.toProduct(null);
+			final Product result = ProductClientMapperTest.this.mapper.toProduct(null);
 
 			assertThat(result).isNull();
 		}
@@ -52,7 +52,7 @@ class ProductClientMapperTest {
 		void when_availability_false_expect_mapped_as_false() {
 			final ProductDetail source = detail("2", "Blazer", new BigDecimal("29.99"), false);
 
-			final Product result = mapper.toProduct(source);
+			final Product result = ProductClientMapperTest.this.mapper.toProduct(source);
 
 			assertThat(result.availability()).isFalse();
 		}

@@ -10,9 +10,7 @@ import org.springframework.web.client.RestClientException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.*;
 
 class InvokerServiceImplTest {
 
@@ -31,7 +29,7 @@ class InvokerServiceImplTest {
 			final Supplier<String> operation = () -> "ok";
 			final Function<RuntimeException, RemoteException> errorHandler = e -> new RemoteException("unused", 500, e);
 
-			final String result = invokerService.invoke(operation, errorHandler);
+			final String result = InvokerServiceImplTest.this.invokerService.invoke(operation, errorHandler);
 
 			assertThat(result).isEqualTo("ok");
 		}
@@ -45,7 +43,8 @@ class InvokerServiceImplTest {
 			final Function<RuntimeException, RemoteException> errorHandler = e -> new RemoteException("mapped",
 					HttpStatus.BAD_GATEWAY.value(), e);
 
-			final Throwable thrown = catchThrowable(() -> invokerService.invoke(operation, errorHandler));
+			final Throwable thrown = catchThrowable(
+					() -> InvokerServiceImplTest.this.invokerService.invoke(operation, errorHandler));
 
 			assertThat(thrown).isInstanceOf(RemoteException.class).hasMessage("mapped");
 			assertThat(((RemoteException) thrown).getStatusCode()).isEqualTo(HttpStatus.BAD_GATEWAY.value());
@@ -59,7 +58,7 @@ class InvokerServiceImplTest {
 			};
 			final Function<RuntimeException, RemoteException> errorHandler = e -> new RemoteException("mapped", 502, e);
 
-			assertThatThrownBy(() -> invokerService.invoke(operation, errorHandler))
+			assertThatThrownBy(() -> InvokerServiceImplTest.this.invokerService.invoke(operation, errorHandler))
 					.isInstanceOf(IllegalStateException.class).hasMessage("bug");
 		}
 	}
