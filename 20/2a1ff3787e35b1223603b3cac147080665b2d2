@@ -1,0 +1,14 @@
+code/common/src/test/java/com/inditex/devtest/service/ParallelTaskExecutorImplTest.java
+  h_5d8a431fb8293b 10,33-34,37,46-47,65-66,79-80,85-86,91-92,97-98,103-104,109-110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "202a1ff3787e35b1223603b3cac147080665b2d2",
+  "prompts": {},
+  "humans": {
+    "h_5d8a431fb8293b": {
+      "author": "rasrov <rasulaa@ext.inditex.com>"
+    }
+  }
+}
