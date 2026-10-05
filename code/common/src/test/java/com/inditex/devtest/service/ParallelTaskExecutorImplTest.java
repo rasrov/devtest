@@ -7,11 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,10 +30,11 @@ class ParallelTaskExecutorImplTest {
 
 		@Test
 		void when_all_tasks_succeed_expect_all_success_results() {
-			final ParallelTaskExecutorImpl parallelExecutor = executor(10, Duration.ofSeconds(2));
+			final ParallelTaskExecutorImpl parallelExecutor = ParallelTaskExecutorImplTest.this.executor(10,
+					Duration.ofSeconds(2));
 
 			final List<TaskResult<String>> results = parallelExecutor.executeInParallel(List.of("a", "b", "c"),
-					item -> item.toUpperCase());
+					String::toUpperCase);
 
 			assertThat(results).hasSize(3);
 			assertThat(results).allMatch(TaskResult::isSuccess);
@@ -46,7 +43,8 @@ class ParallelTaskExecutorImplTest {
 
 		@Test
 		void when_a_task_throws_expect_failure_result_with_error() {
-			final ParallelTaskExecutorImpl parallelExecutor = executor(10, Duration.ofSeconds(2));
+			final ParallelTaskExecutorImpl parallelExecutor = ParallelTaskExecutorImplTest.this.executor(10,
+					Duration.ofSeconds(2));
 			final Function<String, String> task = item -> {
 				if ("bad".equals(item)) {
 					throw new IllegalStateException("boom");
@@ -64,7 +62,8 @@ class ParallelTaskExecutorImplTest {
 
 		@Test
 		void when_task_exceeds_global_timeout_expect_timeout_failure() {
-			final ParallelTaskExecutorImpl parallelExecutor = executor(10, Duration.ofMillis(100));
+			final ParallelTaskExecutorImpl parallelExecutor = ParallelTaskExecutorImplTest.this.executor(10,
+					Duration.ofMillis(100));
 			final Function<String, String> slowTask = item -> {
 				try {
 					Thread.sleep(1000);
@@ -77,35 +76,38 @@ class ParallelTaskExecutorImplTest {
 			final List<TaskResult<String>> results = parallelExecutor.executeInParallel(List.of("slow"), slowTask);
 
 			assertThat(results).hasSize(1);
-			assertThat(results.get(0).isSuccess()).isFalse();
-			assertThat(results.get(0).error()).isInstanceOf(TimeoutException.class);
+			assertThat(results.getFirst().isSuccess()).isFalse();
+			assertThat(results.getFirst().error()).isInstanceOf(TimeoutException.class);
 		}
 
 		@Test
 		void when_no_permits_available_expect_task_rejected() {
-			final ParallelTaskExecutorImpl parallelExecutor = executor(0, Duration.ofSeconds(2));
+			final ParallelTaskExecutorImpl parallelExecutor = ParallelTaskExecutorImplTest.this.executor(0,
+					Duration.ofSeconds(2));
 
 			final List<TaskResult<String>> results = parallelExecutor.executeInParallel(List.of("a"), item -> item);
 
 			assertThat(results).hasSize(1);
-			assertThat(results.get(0).isSuccess()).isFalse();
-			assertThat(results.get(0).error()).isInstanceOf(RejectedExecutionException.class);
+			assertThat(results.getFirst().isSuccess()).isFalse();
+			assertThat(results.getFirst().error()).isInstanceOf(RejectedExecutionException.class);
 		}
 
 		@Test
 		void when_permit_released_after_task_expect_next_task_can_acquire() {
-			final ParallelTaskExecutorImpl parallelExecutor = executor(1, Duration.ofSeconds(2));
+			final ParallelTaskExecutorImpl parallelExecutor = ParallelTaskExecutorImplTest.this.executor(1,
+					Duration.ofSeconds(2));
 
 			final List<TaskResult<String>> first = parallelExecutor.executeInParallel(List.of("a"), item -> item);
 			final List<TaskResult<String>> second = parallelExecutor.executeInParallel(List.of("b"), item -> item);
 
-			assertThat(first.get(0).isSuccess()).isTrue();
-			assertThat(second.get(0).isSuccess()).isTrue();
+			assertThat(first.getFirst().isSuccess()).isTrue();
+			assertThat(second.getFirst().isSuccess()).isTrue();
 		}
 
 		@Test
 		void when_empty_input_expect_empty_results() {
-			final ParallelTaskExecutorImpl parallelExecutor = executor(10, Duration.ofSeconds(2));
+			final ParallelTaskExecutorImpl parallelExecutor = ParallelTaskExecutorImplTest.this.executor(10,
+					Duration.ofSeconds(2));
 
 			final List<TaskResult<String>> results = parallelExecutor.executeInParallel(Set.<String>of(), item -> item);
 
